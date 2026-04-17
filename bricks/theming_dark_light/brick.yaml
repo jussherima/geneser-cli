@@ -1,0 +1,11 @@
+name: theming_dark_light
+description: Adds a settings screen with a theme mode toggle (system, light, dark).
+version: 0.1.0
+environment:
+  mason: ">=0.1.0-dev.52 <0.2.0"
+
+vars:
+  project_name:
+    type: string
+    description: The project name in snake_case.
+    default: my_app

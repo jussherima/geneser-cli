@@ -1,0 +1,21 @@
+name: starter_riverpod_gorouter
+description: A pragmatic Flutter starter with Riverpod for state and go_router for navigation.
+version: 0.1.0
+environment:
+  mason: ">=0.1.0-dev.52 <0.2.0"
+
+vars:
+  project_name:
+    type: string
+    description: The project name in snake_case.
+    default: my_app
+    prompt: What is the project name?
+  organization:
+    type: string
+    description: The bundle identifier (reverse-DNS).
+    default: com.example
+    prompt: What is the organization?
+  description:
+    type: string
+    description: A short description of the project.
+    default: A new Flutter project generated with Geneser.

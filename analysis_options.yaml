@@ -1,0 +1,22 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - bricks/**
+    - '**/*.g.dart'
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    missing_required_param: error
+    missing_return: error
+
+linter:
+  rules:
+    - always_declare_return_types
+    - prefer_single_quotes
+    - require_trailing_commas
+    - unnecessary_lambdas
+    - unnecessary_late
+    - use_key_in_widget_constructors

@@ -1,0 +1,11 @@
+name: auth_firebase
+description: Scaffolds an authentication layer (repository pattern, provider, login screen). Ships with an in-memory stub; swap the implementation to plug in Firebase Auth.
+version: 0.1.0
+environment:
+  mason: ">=0.1.0-dev.52 <0.2.0"
+
+vars:
+  project_name:
+    type: string
+    description: The project name in snake_case.
+    default: my_app

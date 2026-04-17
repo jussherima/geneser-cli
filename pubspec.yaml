@@ -1,0 +1,22 @@
+name: geneser
+description: Skip the Flutter boilerplate. Compose your stack, ship faster.
+version: 0.1.0
+repository: https://github.com/jussherima/geneser-cli
+
+environment:
+  sdk: ^3.3.0
+
+executables:
+  geneser:
+
+dependencies:
+  args: ^2.5.0
+  http: ^1.2.0
+  mason: ">=0.1.0-dev.52 <0.2.0"
+  mason_logger: ^0.2.16
+  path: ^1.9.0
+  yaml: ^3.1.2
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.25.0

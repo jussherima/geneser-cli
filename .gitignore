@@ -1,0 +1,22 @@
+# Dart
+.dart_tool/
+.packages
+build/
+pubspec.lock
+doc/api/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
