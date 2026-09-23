@@ -1,0 +1,6 @@
+name: cwa_clean_hooks
+description: Hooks for cwa_clean brick
+environment:
+  sdk: ">=3.0.0"
+dependencies:
+  mason: ">=0.1.0-dev.52 <0.2.0"

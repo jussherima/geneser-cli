@@ -1,0 +1,6 @@
+{{#with_i18n}}{
+  "app": { "name": "{{app_name}}" },
+  "home": { "title": "Accueil", "welcome": "Bienvenue 👋" },
+  "common": { "save": "Enregistrer", "language": "Langue", "error": "Erreur" },
+  "feed": { "title": "Feed" }
+}{{/with_i18n}}{{^with_i18n}}// i18n none{{/with_i18n}}

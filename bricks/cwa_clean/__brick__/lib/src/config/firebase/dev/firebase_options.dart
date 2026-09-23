@@ -1,0 +1,3 @@
+{{#with_backend}}{{#backend_is_firebase}}// TODO: flutterfire configure
+import 'package:firebase_core/firebase_core.dart';
+class DefaultFirebaseOptions { static FirebaseOptions get currentPlatform => throw UnimplementedError('flutterfire configure'); }{{/backend_is_firebase}}{{^backend_is_firebase}}// backend != firebase{{/backend_is_firebase}}{{/with_backend}}{{^with_backend}}// no backend{{/with_backend}}

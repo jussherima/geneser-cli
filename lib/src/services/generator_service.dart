@@ -22,6 +22,7 @@ class GenerationRequest {
     required this.brickPath,
     required this.targetDir,
     this.features = const <String>[],
+    this.vars = const <String, dynamic>{},
   });
 
   final String projectName;
@@ -31,6 +32,9 @@ class GenerationRequest {
   final String brickPath;
   final String targetDir;
   final List<String> features;
+
+  /// Extra vars from brick.yaml (with_backend, backend_provider, with_initializer, etc.)
+  final Map<String, dynamic> vars;
 }
 
 class GenerationResult {
@@ -130,13 +134,67 @@ class GeneratorService {
     final progress = _logger.progress('Applying template');
     final brick = Brick.path(request.brickPath);
     final generator = await MasonGenerator.fromBrick(brick);
+    // Base vars + extra vars from brick.yaml, plus derived helpers for mustache
+    final baseVars = <String, dynamic>{
+      'project_name': request.projectName,
+      'organization': request.organization,
+      'description': request.description,
+      ...request.vars,
+    };
+    // --- Derive helpers for cwa_clean v0.3 (array checkbox + enum backend) ---
+    // Environments array -> with_env_*
+    final envs = (baseVars['environments'] as List?)?.map((e) => e.toString()).toList();
+    if (envs != null) {
+      baseVars['with_env_dev'] = envs.contains('dev');
+      baseVars['with_env_prod'] = envs.contains('prod');
+      baseVars['with_env_local'] = envs.contains('local');
+      baseVars['with_env_stg'] = envs.contains('stg');
+    }
+    // Features array -> with_* booleans
+    final feats = (baseVars['features'] as List?)?.map((e) => e.toString()).toList();
+    if (feats != null) {
+      baseVars['with_auth'] = feats.contains('auth');
+      baseVars['with_feed'] = feats.contains('feed');
+      baseVars['with_notifications'] = feats.contains('notifications');
+      baseVars['with_profile'] = feats.contains('profile');
+      baseVars['with_language_settings'] = feats.contains('language_settings');
+      baseVars['with_drift'] = feats.contains('drift');
+      baseVars['with_i18n'] = feats.contains('i18n');
+    }
+    // Backend enum [none,firebase,supabase,rest_api] -> booleans
+    final backend = baseVars['backend'] as String? ?? baseVars['backend_provider'] as String? ?? 'none';
+    baseVars['backend'] = backend;
+    baseVars['backend_provider'] = backend; // compat
+    final withBackend = backend != 'none';
+    baseVars['with_backend'] = withBackend;
+    baseVars['backend_is_firebase'] = backend == 'firebase';
+    baseVars['backend_is_supabase'] = backend == 'supabase';
+    baseVars['backend_is_rest'] = backend == 'rest_api';
+
+    // Ensure defaults for cwa_clean v0.3
+    baseVars.putIfAbsent('app_name', () => request.projectName);
+    baseVars.putIfAbsent('bundle_id', () => '');
+    baseVars.putIfAbsent('backend_url', () => 'https://api.example.com');
+    baseVars.putIfAbsent('primary_color', () => '0xFF0E7A4B');
+    baseVars.putIfAbsent('environments', () => ['dev', 'prod']);
+    baseVars.putIfAbsent('features', () => ['feed', 'profile']);
+    baseVars.putIfAbsent('backend', () => 'none');
+    baseVars.putIfAbsent('with_drift', () => (baseVars['features'] as List?)?.contains('drift') ?? true);
+    baseVars.putIfAbsent('with_i18n', () => (baseVars['features'] as List?)?.contains('i18n') ?? true);
+    // Fallback booleans for old callers
+    baseVars.putIfAbsent('with_env_dev', () => true);
+    baseVars.putIfAbsent('with_env_prod', () => true);
+    baseVars.putIfAbsent('with_env_local', () => false);
+    baseVars.putIfAbsent('with_env_stg', () => false);
+    baseVars.putIfAbsent('with_auth', () => false);
+    baseVars.putIfAbsent('with_notifications', () => true);
+    baseVars.putIfAbsent('with_feed', () => true);
+    baseVars.putIfAbsent('with_profile', () => true);
+    baseVars.putIfAbsent('with_language_settings', () => true);
+
     await generator.generate(
       DirectoryGeneratorTarget(targetDir),
-      vars: <String, dynamic>{
-        'project_name': request.projectName,
-        'organization': request.organization,
-        'description': request.description,
-      },
+      vars: baseVars,
       fileConflictResolution: FileConflictResolution.overwrite,
     );
     progress.complete('Template applied');

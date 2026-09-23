@@ -92,10 +92,23 @@ En cas d'arbitrage, ces principes tranchent :
 
 ### ✅ Ce que Geneser est
 
-- Un **CLI** qui compose des templates Flutter à partir de briques indépendantes.
-- Un **registre open source** de templates curatés.
+- Un **CLI** qui génère un projet Flutter à partir d'**un unique template lié** (dossier local ou URL git). Le template contient déjà : les champs à demander, la structure de dossiers et le contenu des fichiers.
+- Flux : `link template → questionnaire auto-généré depuis brick.yaml → projet Flutter avec structure + contenu`.
+- Après la v1 : **marketplace** consultable via `geneser create` / `geneser list` (recherche, tri par score) — évolution du même mécanisme.
 - Un outil **bilingue** (anglais par défaut, français en secondaire).
 - **Idempotent** : `geneser add <feature>` ajoute proprement sur un projet existant.
+
+### Modèle de templating (v0.2 cible)
+
+- **Entrée** : un dossier template à linker (`--from ./mon-template` ou `--from https://github.com/org/brick.git`), pas un choix dans un catalogue hardcodé.
+- **Architecture découplée (plus de dépendance à l'archi locale)** :
+  - **Moteur Dart (`geneser-cli`)** = interpréteur du template. Il ne connaît aucune architecture en dur ; il orchestre, attend les commandes et génère.
+  - **Template Brick** = porte tout : questionnaires (`brick.yaml` vars) + architecture de dossiers (`__brick__/`) + contenu de chaque fichier à générer (Mustache `{{vars}}`).
+- **Template = brick.yaml + __brick__/** :
+  - `brick.yaml` déclare `vars` → questionnaire généré automatiquement par le CLI.
+  - `__brick__/` décrit la structure de dossiers + le contenu des fichiers.
+- **Sortie** : projet Flutter boilerplate complet (`flutter create` + overlay + `pub get` + `git init`), sans dépendance runtime à Geneser.
+- **NB — commandes dans le template** : le template peut déclarer des commandes de base (ex. `flutter create`). Le moteur attend que chaque commande termine et ait bien généré le projet avant de créer les dossiers/fichiers nécessaires (`lib/src/services/generator_service.dart:88-94` : `await _runFlutterCreate` puis `await _applyBrick`).
 
 ### ❌ Ce que Geneser n'est pas
 
@@ -117,16 +130,16 @@ En cas d'arbitrage, ces principes tranchent :
 
 Mieux vaut un template parfaitement exécuté que dix bancals.
 
-### Contenu du MVP
+### Contenu du MVP (v0.1 — hardcodé, en transition vers template lié)
 
-- **1 template** : *Starter Riverpod + go_router*
+- **1 template hardcodé** : *Starter Riverpod + go_router* (sera le premier template lié de référence).
   - Structure de dossiers claire (`lib/features/`, `lib/shared/`, `lib/routing/`).
   - Riverpod configuré avec `ProviderScope`.
   - go_router avec 2 routes d'exemple.
   - Theme clair/sombre toggleable.
   - Tests unitaires initiaux qui passent.
 
-- **2 features cochables** :
+- **2 features cochables** (briques locales) :
   - `auth_firebase` — authentification email + Google via Firebase.
   - `theming_dark_light` — gestion du thème persistée.
 
@@ -134,6 +147,13 @@ Mieux vaut un template parfaitement exécuté que dix bancals.
   - `flutter pub get` automatique.
   - `git init` + premier commit.
   - `dart run build_runner build` si nécessaire.
+
+### Cible v0.2 — template lié (priorité)
+
+- Entrée unique : `geneser create --from <path|url>` (dossier à linker).
+- Le template embarque `brick.yaml` (champs à demander) + `__brick__/` (structure + contenu).
+- Questionnaire auto-généré depuis `vars`, puis génération Flutter complète.
+- Rétrocompatibilité : ` --template starter_riverpod_gorouter` reste supporté via `GENESER_BRICKS_DIR`.
 
 ### Stack technique
 
@@ -196,20 +216,25 @@ github.com/geneser/
 - Publication sur pub.dev.
 - Doc d'installation + tutorial en 1 page.
 
-### v0.2.0 — Catalogue initial (3 mois)
+### v0.2.0 — Template lié (6 semaines)
 
-- 3 templates supplémentaires (Clean Architecture, MVVM simple, Starter minimaliste).
+- Support `geneser create --from <path|git-url>` : template = dossier à linker.
+- `brick.yaml` = champs à demander (questionnaire auto), `__brick__/` = structure + contenu.
+- Mode non-interactif : `geneser create --from ./tpl --name my_app --yes` (+ vars passées en flags).
+- Fix `GeneratorService.resolveBrickPath` pour binaires compilés (`GENESER_BRICKS_DIR` + `resolvedExecutable`).
+
+### v0.3.0 — Catalogue initial (3 mois)
+
+- 3 templates liés de référence (Clean Architecture, MVVM simple, Starter minimaliste).
 - 5 features (notifications push, i18n, API REST, onboarding, splash).
-- Mode non-interactif : `geneser create --template=X --features=Y,Z`.
-- Commande `geneser list` pour explorer le catalogue.
+- `geneser list` affiche le catalogue local + distant (cache 1h).
 
-### v1.0.0 — Stabilité (6 mois)
+### v1.0.0 — Marketplace (6 mois)
 
-- API CLI stable, versionning strict.
-- Documentation complète (Docusaurus).
-- Tests E2E automatisés sur chaque template.
-- Support bilingue EN / FR complet.
-- Contributions communautaires fluides.
+- `geneser create` sans `--from` affiche la marketplace : recherche, tri par score, filtres.
+- `geneser search <query>` + `geneser list --refresh`.
+- API CLI stable, versionning strict, doc Docusaurus, tests E2E par template.
+- Contributions communautaires fluides (score, downloads).
 
 ### v2.x — Extensions (12 mois et au-delà)
 

@@ -1,0 +1,5 @@
+{{#with_env_local}}{
+  "ENV": "local",
+  "BACKEND_URL": "https://api.example.com",
+  "SUPPORT_EMAIL": "support@example.com"
+}{{/with_env_local}}{{^with_env_local}}// local disabled{{/with_env_local}}

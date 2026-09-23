@@ -1,0 +1,7 @@
+{{#with_i18n}}base_locale: fr
+fallback_strategy: base_locale
+input_directory: lib/src/localization
+input_file_pattern: .i18n.json
+output_directory: lib/src/localization
+output_file_name: translations.g.dart
+output_format: single_file{{/with_i18n}}{{^with_i18n}}# i18n disabled (i18n=none){{/with_i18n}}

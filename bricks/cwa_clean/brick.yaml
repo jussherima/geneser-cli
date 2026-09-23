@@ -1,0 +1,60 @@
+name: cwa_clean
+description: Boilerplate CWA — Clean Architecture Prêt à Modifier (centralisé feature-first, riverpod moderne @riverpod, slang optionnel). Basé sur Fybego sans melos + Volako.
+version: 0.3.0
+environment:
+  mason: ">=0.1.0-dev.52 <0.2.0"
+
+vars:
+  project_name:
+    type: string
+    description: Nom du package en snake_case.
+    default: biznaka_app
+    prompt: Nom du projet (snake_case) ?
+  app_name:
+    type: string
+    description: Nom affiché (MaterialApp title).
+    default: BizNaka
+    prompt: Nom affiché de l'app ?
+  organization:
+    type: string
+    description: "Bundle ID reverse-DNS (ex: com.example)."
+    default: com.example
+    prompt: Organization (bundleId base) ?
+  bundle_id:
+    type: string
+    description: "Bundle ID complet (ex: net.forgero.kandra). Vide = auto."
+    default: ""
+    prompt: BundleId complet (vide = auto) ?
+  description:
+    type: string
+    description: Description courte du projet.
+    default: Clean Architecture boilerplate — CWA ready to modify.
+    prompt: Description ?
+  primary_color:
+    type: string
+    description: "Couleur primaire hex (ex: 0xFF0E7A4B)."
+    default: "0xFF0E7A4B"
+    prompt: Couleur primaire hex ?
+  # --- Environnements : 1 liste cochable ---
+  environments:
+    type: array
+    description: Environnements à générer (cocher plusieurs).
+    values: [dev, prod, local, stg]
+    default: [dev, prod]
+    prompt: Environnements ?
+  # --- Features : 1 liste cochable (tout visible) ---
+  features:
+    type: array
+    description: Features à inclure (cocher plusieurs).
+    values: [auth, feed, notifications, profile, language_settings, drift, i18n]
+    default: [feed, profile]
+    prompt: Features ?
+  # --- Backend : 1 choix unique (none = pas de backend) ---
+  backend:
+    type: enum
+    description: Backend ?
+    values: [none, firebase, supabase, rest_api]
+    default: none
+    prompt: Backend ?
+  # backend_url n'est plus demandé : édite assets/config/dev.json si rest_api
+

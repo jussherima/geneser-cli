@@ -1,0 +1,5 @@
+{{#with_env_stg}}{
+  "ENV": "stg",
+  "BACKEND_URL": "https://api.example.com",
+  "SUPPORT_EMAIL": "support@example.com"
+}{{/with_env_stg}}{{^with_env_stg}}// stg disabled{{/with_env_stg}}

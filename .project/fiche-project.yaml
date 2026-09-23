@@ -1,0 +1,318 @@
+# Fiche Projet - Geneser CLI
+# Dernière mise à jour: 2026-05-13
+# Source de vérité: VISION.md, CDC.md, README.md, CHANGELOG.md + analyse codebase
+
+projet:
+  nom: geneser-cli
+  description: "Skip the Flutter boilerplate. Compose your stack, ship faster."
+  version: "0.1.0"
+  repository: "https://github.com/jussherima/geneser-cli"
+  licence: "MIT"
+  sdk: "Dart >=3.3.0"
+  moteur_templates: "Mason >=0.1.0-dev.52 <0.2.0"
+  etat: "MVP v0.1.0 scaffold - 1 commit (d34af68)"
+
+# Statuts possibles: fait | non_fait | en_cours | prevu
+# fait = implémenté et testé | non_fait = demandé mais absent | prevu = roadmap VISION.md
+
+fonctionnalites:
+
+  # --- CLI Core ---
+  - id: cli_scaffold
+    numero: "001"
+    nom: "Scaffold CLI Dart + entrypoint bin/geneser.dart"
+    categorie: "cli"
+    status: fait
+    details: "GeneserRunner (lib/geneser.dart), args/mason_logger, dart analyze clean"
+    ref: "lib/geneser.dart:8, bin/geneser.dart:5"
+
+  - id: cli_create_interactif
+    numero: "002"
+    nom: "geneser create - mode interactif"
+    categorie: "cli"
+    status: fait
+    details: "Prompts project_name, organization, architecture, features (chooseOne/chooseAny)"
+    ref: "lib/src/commands/create_command.dart:183"
+
+  - id: cli_create_non_interactif
+    numero: "003"
+    nom: "geneser create - mode non-interactif / CI"
+    categorie: "cli"
+    status: fait
+    details: "Flags --name, --template/-t, --organization/-o, --feature/-f repeatable, --yes/-y, --refresh"
+    ref: "lib/src/commands/create_command.dart:23"
+
+  - id: cli_add
+    numero: "004"
+    nom: "geneser add - ajout feature sur projet existant"
+    categorie: "cli"
+    status: fait
+    details: "Lit .geneser.yaml, filtre compatible non-installées, apply + update manifest, détection conflits"
+    ref: "lib/src/commands/add_command.dart:12"
+
+  - id: cli_list
+    numero: "005"
+    nom: "geneser list - catalogue templates/features"
+    categorie: "cli"
+    status: fait
+    details: "Affiche templates + features depuis RegistryService, flag --refresh/-r"
+    ref: "lib/src/commands/list_command.dart:7"
+
+  - id: cli_doctor
+    numero: "006"
+    nom: "geneser doctor - diagnostic environnement"
+    categorie: "cli"
+    status: fait
+    details: "Checks Dart/Flutter/Git + contexte projet (.geneser.yaml) si présent"
+    ref: "lib/src/commands/doctor_command.dart:8"
+
+  - id: cli_version_help
+    numero: "007"
+    nom: "Flags --version / --help globaux et par commande"
+    categorie: "cli"
+    status: fait
+    ref: "lib/geneser.dart:15"
+
+  # --- Registry ---
+  - id: registry_remote_cache
+    numero: "008"
+    nom: "RegistryService: fetch distant + cache local + fallback builtin"
+    categorie: "registry"
+    status: fait
+    details: "URL https://raw.githubusercontent.com/jussherima/geneser-bricks/main/registry.yaml, cache ~/.geneser/cache/registry.yaml TTL 1h"
+    ref: "lib/src/services/registry_service.dart:17"
+
+  - id: registry_yaml_schema
+    numero: "009"
+    nom: "Schema registry YAML (templates + features + integrations)"
+    categorie: "registry"
+    status: fait
+    details: "parseYaml public, _parseTemplate/_parseFeature, gestion YamlList/YamlMap"
+    ref: "lib/src/services/registry_service.dart:95"
+
+  - id: registry_conflict_detection
+    numero: "010"
+    nom: "Détection conflits entre features"
+    categorie: "registry"
+    status: fait
+    details: "_detectConflicts sur conflictsWith, vérifié dans create et add"
+    ref: "lib/src/commands/create_command.dart:296, lib/src/commands/add_command.dart:141"
+
+  - id: registry_builtin
+    numero: "011"
+    nom: "Registry builtin hard-codé (fallback)"
+    categorie: "registry"
+    status: fait
+    details: "1 template + 2 features codés en dur"
+    ref: "lib/src/models/registry.dart:25"
+
+  # --- Génération ---
+  - id: generator_pipeline
+    numero: "012"
+    nom: "GeneratorService pipeline complet"
+    categorie: "generation"
+    status: fait
+    details: "flutter create -> Mason overlay -> .geneser.yaml -> flutter pub get -> git init + commit"
+    ref: "lib/src/services/generator_service.dart:60"
+
+  - id: manifest_geneser_yaml
+    numero: "013"
+    nom: "Manifeste .geneser.yaml (template + features installées)"
+    categorie: "generation"
+    status: fait
+    details: "ProjectManifest (geneserVersion, templateId, projectName, organization, features) + ProjectManifestService read/write/copyWith"
+    ref: "lib/src/models/project_manifest.dart, lib/src/services/project_manifest_service.dart"
+
+  - id: brick_resolution_local
+    numero: "014"
+    nom: "Résolution bricks locale (bricks/<id>)"
+    categorie: "generation"
+    status: fait
+    details: "GENESER_BRICKS_DIR env > walk depuis Platform.script > ./bricks/<id>"
+    ref: "lib/src/services/generator_service.dart:209"
+
+  - id: feature_service_apply
+    numero: "015"
+    nom: "FeatureService.apply (overlay brick feature)"
+    categorie: "generation"
+    status: fait
+    details: "Mason Brick.path + DirectoryGeneratorTarget + FileConflictResolution.skip + update manifest"
+    ref: "lib/src/services/feature_service.dart:29"
+
+  # --- Bricks / Contenu ---
+  - id: template_starter_riverpod_gorouter
+    numero: "016"
+    nom: "Template starter_riverpod_gorouter"
+    categorie: "bricks"
+    status: fait
+    details: "Riverpod + go_router + Material3 light/dark + 2 écrans exemple, structure lib/features lib/shared lib/routing"
+    ref: "bricks/starter_riverpod_gorouter/, lib/src/models/registry.dart:27"
+
+  - id: feature_theming_dark_light
+    numero: "017"
+    nom: "Feature theming_dark_light"
+    categorie: "bricks"
+    status: fait
+    details: "Settings screen toggle system/light/dark, Riverpod themeMode persisté"
+    ref: "bricks/theming_dark_light/, lib/src/models/registry.dart:48"
+
+  - id: feature_auth_firebase
+    numero: "018"
+    nom: "Feature auth_firebase (stub in-memory)"
+    categorie: "bricks"
+    status: fait
+    details: "Repository + provider + login screen stub, à remplacer par Firebase réel, conflictsWith auth_supabase"
+    ref: "bricks/auth_firebase/, lib/src/models/registry.dart:40"
+
+  # --- Qualité / Tests ---
+  - id: tests_validators_registry_generator
+    numero: "019"
+    nom: "Suite tests 40+ (validators, registry parsing, generator failures, manifest, feature, bricks)"
+    categorie: "qualite"
+    status: fait
+    ref: "test/"
+
+  - id: docs_readme_contributing_vision
+    numero: "020"
+    nom: "Documentation README / CONTRIBUTING / VISION / CDC / CHANGELOG"
+    categorie: "docs"
+    status: fait
+    ref: "README.md, CONTRIBUTING.md, VISION.md, CDC.md, CHANGELOG.md"
+
+  # --- NON FAIT / À FAIRE ---
+  - id: template_from_git_url
+    numero: "021"
+    nom: "Création template à partir de lien / dépôt Git (Brick.git)"
+    categorie: "generation"
+    status: non_fait
+    details: "Actuellement seul Brick.path local. Pas de geneser create --from <git_url> / --template-url. Prévoir: champ source/url dans Template, support Mason Brick.git, clone temp + cache, résolution distante. Question initiale de l'utilisateur."
+    priorite: haute
+    ref: "VISION.md:144 (registre via git URL prévu mais non câblé)"
+
+  - id: template_from_local_path
+    numero: "022"
+    nom: "Création template depuis chemin local arbitraire (--from-path)"
+    categorie: "generation"
+    status: non_fait
+    priorite: moyenne
+
+  - id: registry_brickhub
+    numero: "023"
+    nom: "Publication templates sur BrickHub + registre distant geneser-bricks"
+    categorie: "registry"
+    status: non_fait
+    details: "VISION.md v2.x - landing geneser.dev"
+    priorite: moyenne
+    ref: "VISION.md:218"
+
+  - id: templates_v02
+    numero: "024"
+    nom: "3 templates supplémentaires v0.2.0"
+    categorie: "bricks"
+    status: prevu
+    details: "Clean Architecture, MVVM simple, Starter minimaliste"
+    priorite: haute
+    ref: "VISION.md:201"
+
+  - id: features_v02
+    numero: "025"
+    nom: "5 features v0.2.0"
+    categorie: "bricks"
+    status: prevu
+    details: "notifications_push, i18n, api_rest, onboarding, splash"
+    priorite: haute
+    ref: "VISION.md:203"
+
+  - id: integration_firebase_reel
+    numero: "026"
+    nom: "Intégration Firebase réelle (auth email + Google) vs stub actuel"
+    categorie: "bricks"
+    status: non_fait
+    priorite: moyenne
+
+  - id: integration_supabase
+    numero: "027"
+    nom: "Intégration Supabase + feature auth_supabase"
+    categorie: "bricks"
+    status: non_fait
+    details: "CDC.md mentionne Firebase/Supabase au choix, conflit prévu avec auth_firebase"
+    priorite: moyenne
+
+  - id: hook_build_runner
+    numero: "028"
+    nom: "Hook post-génération dart run build_runner build (si nécessaire)"
+    categorie: "generation"
+    status: non_fait
+    details: "Prévu MVP VISION.md:136 mais non implémenté (non bloquant)"
+    ref: "VISION.md:133"
+
+  - id: vars_secrets_avancees
+    numero: "029"
+    nom: "Variables avancées / secrets (Firebase config, API keys) à la génération"
+    categorie: "generation"
+    status: prevu
+    ref: "VISION.md:230"
+
+  - id: publication_pubdev
+    numero: "030"
+    nom: "Publication pub.dev (dart pub global activate geneser)"
+    categorie: "distribution"
+    status: non_fait
+    details: "README.md indique 'Not yet published'"
+    priorite: haute
+    ref: "README.md:22, VISION.md:140"
+
+  - id: plugin_vscode
+    numero: "031"
+    nom: "Plugin VSCode (génération sans CLI)"
+    categorie: "distribution"
+    status: prevu
+    ref: "VISION.md:216"
+
+  - id: support_melos_monorepo
+    numero: "032"
+    nom: "Support monorepos Melos"
+    categorie: "generation"
+    status: prevu
+    ref: "VISION.md:220, VISION.md:232"
+
+  - id: telemetrie_optin
+    numero: "033"
+    nom: "Télémétrie opt-in anonyme"
+    categorie: "qualite"
+    status: prevu
+    ref: "VISION.md:231"
+
+  - id: i18n_cli_bilingue
+    numero: "034"
+    nom: "Support bilingue CLI EN/FR complet + infra ES/PT/DE"
+    categorie: "cli"
+    status: prevu
+    ref: "VISION.md:233"
+
+  - id: site_docs_docusaurus
+    numero: "035"
+    nom: "Site doc Docusaurus/VitePress + tutorial 1 page"
+    categorie: "docs"
+    status: non_fait
+    ref: "VISION.md:154, VISION.md:208"
+
+  - id: gouvernance_contrib
+    numero: "036"
+    nom: "Gouvernance templates communautaires (org github.com/geneser, guides PR registry.yaml)"
+    categorie: "docs"
+    status: non_fait
+    details: "CONTRIBUTING.md partiel, pas encore org geneser-bricks/geneser-docs séparés"
+    ref: "VISION.md:162"
+
+roadmap_reference:
+  v0_1_0_mvp: "1 template + 2 features + CLI fonctionnel + publication pub.dev - EN COURS (publication manquante)"
+  v0_2_0_catalogue: "3 templates + 5 features + mode non-interactif + geneser list - PARTIEL (list ok, templates/features manquants)"
+  v1_0_0_stabilite: "API stable + docs complète + tests E2E + i18n - NON_FAIT"
+  v2_x_extensions: "Plugin VSCode + landing + BrickHub + Melos - NON_FAIT"
+
+stats:
+  fait: 20
+  non_fait: 9
+  prevu: 7
+  total: 36

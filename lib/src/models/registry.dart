@@ -35,6 +35,17 @@ class Registry {
           'theming_dark_light',
         ],
       ),
+      Template(
+        id: 'cwa_clean',
+        name: 'CWA Clean — Boilerplate prêt à modifier',
+        description:
+            'Clean Architecture centralisée (85% Fybego+AgenceBrioche) : Riverpod+go_router TypedShellRoute, slang, Drift optionnel, Firebase flavors, theme ThemeExtension. 1 repo, 1 pubspec, make feature.',
+        author: '@geneser',
+        compatibleFeatures: <String>[
+          'auth_firebase',
+          'theming_dark_light',
+        ],
+      ),
     ],
     features: <Feature>[
       Feature(

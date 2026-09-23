@@ -1,0 +1,5 @@
+{{#with_env_dev}}{
+  "ENV": "dev",
+  "BACKEND_URL": "https://api.example.com",
+  "SUPPORT_EMAIL": "support@example.com"
+}{{/with_env_dev}}{{^with_env_dev}}// dev disabled{{/with_env_dev}}

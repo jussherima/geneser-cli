@@ -1,0 +1,2 @@
+import 'package:flutter/material.dart'; import 'package:google_fonts/google_fonts.dart';
+class AppTextTheme { final TextStyle primary; final TextStyle secondary; final TextStyle headline; const AppTextTheme({required this.primary, required this.secondary, required this.headline}); static AppTextTheme build() => AppTextTheme(primary: GoogleFonts.plusJakartaSans(fontSize:14, fontWeight: FontWeight.w400), secondary: GoogleFonts.plusJakartaSans(fontSize:12, fontWeight: FontWeight.w500), headline: GoogleFonts.plusJakartaSans(fontSize:20, fontWeight: FontWeight.w700)); }
